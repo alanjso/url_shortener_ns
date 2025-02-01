@@ -5,6 +5,7 @@ import { ConfigModule } from '@nestjs/config';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { UsersModule } from './users/users.module';
 // import { UrlsModule } from './urls/urls.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { UsersModule } from './users/users.module';
       logging: (msg) => msg.includes('ERROR') && console.log(msg),
     }),
     UsersModule,
+    AuthModule,
     // UrlsModule
   ],
   controllers: [AppController],
