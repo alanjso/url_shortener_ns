@@ -1,4 +1,5 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, ClassSerializerInterceptor, SerializeOptions, NotFoundException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, NotFoundException, UnauthorizedException, UseGuards, Req } from '@nestjs/common';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -16,7 +17,8 @@ export class UsersController {
   }
 
   @Get()
-  async findAll() {
+  @UseGuards(JwtAuthGuard)
+  async findAll(@Req() req) {
     const users = await this.usersService.findAll();
     if (users.length) {
       (users).forEach(user => {
@@ -27,6 +29,7 @@ export class UsersController {
   }
 
   @Get(':id')
+  @UseGuards(JwtAuthGuard)
   async findOne(@Param('id') id: string) {
     const user = await this.usersService.findOne(id)
 
@@ -39,7 +42,13 @@ export class UsersController {
   }
 
   @Patch(':id')
-  async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+  @UseGuards(JwtAuthGuard)
+  async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto, @Req() req) {
+
+    const userId = req.user.id;
+    if (userId !== id) {
+      throw new UnauthorizedException(`userId ${userId} e ID ${id} não compatíveis`);
+    }
 
     const user = await this.usersService.update(id, updateUserDto);
     user.password = '';
@@ -47,7 +56,13 @@ export class UsersController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  @UseGuards(JwtAuthGuard)
+  remove(@Param('id') id: string, @Req() req) {
+    const userId = req.user.id;
+    if (userId !== id) {
+      throw new UnauthorizedException(`userId ${userId} e ID ${id} não compatíveis`);
+    }
+
     return this.usersService.remove(id);
   }
 }
