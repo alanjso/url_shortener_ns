@@ -4,7 +4,7 @@ import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { UsersModule } from './users/users.module';
-// import { UrlsModule } from './urls/urls.module';
+import { UrlsModule } from './urls/urls.module';
 import { AuthModule } from './auth/auth.module';
 
 @Module({
@@ -30,7 +30,7 @@ import { AuthModule } from './auth/auth.module';
     }),
     UsersModule,
     AuthModule,
-    // UrlsModule
+    UrlsModule
   ],
   controllers: [AppController],
   providers: [AppService],

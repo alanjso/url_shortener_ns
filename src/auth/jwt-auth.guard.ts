@@ -18,7 +18,7 @@ export class JwtAuthGuard implements CanActivate {
         const token = request.headers.authorization?.split(' ')[1];
 
         if (!token) {
-            if (request.path === '/shorten') {
+            if (request.path === '/urls/shorten') {
                 request['user'] = undefined;
                 return true;
             }
